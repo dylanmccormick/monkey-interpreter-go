@@ -7,6 +7,7 @@ import (
 
 	"github.com/dylanmccormick/monkey-interpreter-go/evaluator"
 	"github.com/dylanmccormick/monkey-interpreter-go/lexer"
+	"github.com/dylanmccormick/monkey-interpreter-go/object"
 	"github.com/dylanmccormick/monkey-interpreter-go/parser"
 )
 
@@ -14,6 +15,7 @@ const PROMPT = ">> "
 
 func Start(in io.Reader, out io.Writer) {
 	scanner := bufio.NewScanner(in)
+	env := object.NewEnvironment()
 
 	for {
 		fmt.Fprintf(out, PROMPT)
@@ -31,9 +33,8 @@ func Start(in io.Reader, out io.Writer) {
 			printParserErrors(out, p.Errors())
 			continue
 		}
-		
 
-		evaluated := evaluator.Eval(program)
+		evaluated := evaluator.Eval(program, env)
 		if evaluated != nil {
 			io.WriteString(out, evaluated.Inspect())
 			io.WriteString(out, "\n")
@@ -54,8 +55,7 @@ const MONKEY_FACE = `            __,__
            '-----'
 `
 
-
-func printParserErrors(out io.Writer, errors []string){
+func printParserErrors(out io.Writer, errors []string) {
 	io.WriteString(out, MONKEY_FACE)
 	io.WriteString(out, "Whoops! We ran into some monkey business here!\n")
 	io.WriteString(out, " parser errors: \n")
