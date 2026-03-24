@@ -1,6 +1,10 @@
 package evaluator
 
-import "github.com/dylanmccormick/monkey-interpreter-go/object"
+import (
+	"fmt"
+
+	"github.com/dylanmccormick/monkey-interpreter-go/object"
+)
 
 var builtins = map[string]*object.Builtin{
 	"len": {
@@ -84,6 +88,13 @@ var builtins = map[string]*object.Builtin{
 			return &object.Array{Elements: newElements}
 		},
 	},
+	"puts": {
+		Fn: func(args ...object.Object) object.Object {
+			for _, arg := range args {
+				fmt.Println(arg.Inspect())
+			}
+
+			return NULL
+		},
+	},
 }
-
-
